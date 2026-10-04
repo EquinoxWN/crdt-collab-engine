@@ -57,7 +57,7 @@ Language: **TypeScript** (strict, compiled with `tsc` 7), no runtime dependencie
 
 ## Run it
 
-Needs Node.js 22.12 or newer.
+Needs Node.js 24 or newer.
 
 ```bash
 make setup   # npm ci

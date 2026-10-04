@@ -4,7 +4,7 @@ Thanks for helping. This is a TypeScript project; issues and pull requests are w
 
 ## Set up and check your change
 
-Needs Node.js 22.12+. Caches and virtual environments stay in git-ignored folders inside the repo.
+Needs Node.js 24+. Caches and virtual environments stay in git-ignored folders inside the repo.
 
 ```bash
 make setup   # install dependencies
