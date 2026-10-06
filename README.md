@@ -3,7 +3,7 @@
 [![ci](https://github.com/EquinoxWN/crdt-collab-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/EquinoxWN/crdt-collab-engine/actions/workflows/ci.yml)
 ![status](https://img.shields.io/badge/status-M1%20done%2C%20M2%20in%20progress-yellow)
 
-> Lets many people edit one document at once, even offline, and never lose an edit: the engine behind Google-Docs-style editing.
+> Lets many people edit one document at once and never lose an edit: a sequence CRDT where every replica converges to the same text whatever order edits arrive in, checked over thousands of random schedules.
 
 Part of my **Distributed Systems & Storage** list · TypeScript · core project
 
@@ -34,7 +34,7 @@ flowchart LR
 
 ## How it works
 
-_Steps 1 and 2 are built and tested (M1); the rest is on the [roadmap](#roadmap)._
+_Steps 1, 2 and 6 are built and tested; the rest is on the [roadmap](#roadmap)._
 
 1. Every character gets a unique ID (replicaId, counter). Inserts record the IDs of their neighbours, so a position is expressed by identity rather than by index.
 2. Deletes turn characters into tombstones instead of removing them, so concurrent edits that reference them still resolve correctly.
@@ -45,11 +45,11 @@ _Steps 1 and 2 are built and tested (M1); the rest is on the [roadmap](#roadmap)
 
 ## Tech stack
 
-| Area | Tools |
-|---|---|
-| Core | TypeScript, Fugue-style sequence CRDT, Lamport clocks, varint binary encoding |
-| Test | fast-check property tests, node:test, benchmarks vs Yjs and Automerge |
-| Demo | two-pane browser editor with a simulated network toggle |
+| Area | In M1 | Planned |
+|---|---|---|
+| Core | TypeScript, RGA-style sequence CRDT, Lamport ids, tombstones | Fugue ordering, state-vector sync, varint encoding, tombstone GC |
+| Test | node:test, fast-check properties | Benchmarks against Yjs and Automerge |
+| Demo | - | Two-pane browser editor with a simulated network |
 
 Language: **TypeScript** (strict, compiled with `tsc` 7), no runtime dependencies.
 
@@ -136,7 +136,7 @@ mindmap
 
 **M3** (≈25 h)
 - [ ] Consecutive typing is stored as runs and encoded with variable-length integers; tombstones are garbage-collected once every replica has seen them.
-- [ ] fast-check generates random multi-replica edit sequences and delivery orders, and asserts that every replica ends with identical text.
+- [x] fast-check generates random multi-replica edit sequences and delivery orders, and asserts that every replica ends with identical text.
 - [ ] Publish the proof below with real numbers
 
 ## Proof
@@ -152,7 +152,7 @@ What this repo must show before it counts as done:
 ## Why it matters
 
 - **Interview angle:** 'Design Google Docs': concurrent edits and offline sync.
-- **Upstream I'm contributing to:** Yjs or Automerge.
+- **Upstream I'd like to contribute to:** Yjs or Automerge.
 
 ## Design docs
 
