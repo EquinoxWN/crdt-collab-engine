@@ -7,6 +7,12 @@
 
 Part of my **Distributed Systems & Storage** list · TypeScript · core project
 
+## Proof it works
+
+16 tests pass, three of them properties checked over 1,000 random delivery schedules each: every replica converges to the same text whatever order operations arrive in, and no edit is lost or resurrected. The known limitation (interleaving of text typed backwards concurrently) is pinned by a test so the M2 fix will show. npm audit finds nothing:
+
+![tsc, npm test and npm audit output](docs/proof/tests.jpg)
+
 ## Architecture
 
 **What M1 runs today:**
