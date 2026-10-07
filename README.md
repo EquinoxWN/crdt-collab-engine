@@ -43,6 +43,12 @@ _Steps 1, 2 and 6 are built and tested; the rest is on the [roadmap](#roadmap)._
 5. Consecutive typing is stored as runs and encoded with variable-length integers; tombstones are garbage-collected once every replica has seen them.
 6. fast-check generates random multi-replica edit sequences and delivery orders, and asserts that every replica ends with identical text.
 
+## Who it helps
+
+- **Who:** Developers building collaborative or offline-first editors in TypeScript.
+- **The problem:** When edits from several people arrive in different orders, naive merging produces different text on different screens or loses edits.
+- **How to use it:** Use the engine as a readable reference for identity-based positions and tombstones, and reuse its property tests, which check convergence over 1,000 random delivery schedules each.
+
 ## Tech stack
 
 | Area | In M1 | Planned |
