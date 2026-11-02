@@ -53,6 +53,8 @@ export class Replica {
   /** Inserts text before visible position index; returns the operations to send to peers. */
   insert(index: number, text: string): InsertOp[] {
     if (!Number.isInteger(index) || index < 0 || index > this.length) throw new RangeError("index out of range");
+    // Peers reject unsafe counters, so refuse rather than create ops nobody else can apply.
+    if (this.#clock + [...text].length > Number.MAX_SAFE_INTEGER) throw new RangeError("Lamport counter exhausted");
     let origin: Id | null = index === 0 ? null : this.#visible(index - 1).id;
     const ops: InsertOp[] = [];
     for (const value of text) {

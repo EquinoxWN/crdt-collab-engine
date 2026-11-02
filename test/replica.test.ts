@@ -91,6 +91,18 @@ test("ops that arrive before their dependency wait, then apply", () => {
   assert.equal(c.toString(), "ab");
 });
 
+test("a delete that arrives before the character it removes waits for it", () => {
+  const a = new Replica("a");
+  const b = new Replica("b");
+  const [ins] = a.insert(0, "x");
+  const [del] = a.delete(0, 1);
+  b.apply(del);
+  assert.equal(b.pendingCount, 1);
+  b.apply(ins);
+  assert.equal(b.pendingCount, 0);
+  assert.equal(b.toString(), "");
+});
+
 test("applying the same op twice changes nothing", () => {
   const a = new Replica("a");
   const b = new Replica("b");
@@ -113,6 +125,8 @@ test("malformed ops from a peer are rejected without changing the document", () 
     { type: "insert", id: { replica: "a", counter: 1 }, origin: null, value: "xy" },
     { type: "insert", id: { replica: "a", counter: 1 }, origin: null, value: "" },
     { type: "insert", id: { replica: "a".repeat(65), counter: 1 }, origin: null, value: "x" },
+    { type: "insert", id: { replica: "a", counter: 1 }, origin: { replica: "a", counter: 0 }, value: "x" },
+    { type: "insert", id: { replica: "a", counter: 1 }, origin: "start", value: "x" },
     { type: "delete", target: { replica: "a" } },
   ];
   for (const op of bad) assert.throws(() => b.apply(op), TypeError, JSON.stringify(op));
@@ -139,6 +153,14 @@ test("local edits outside the document are refused", () => {
   assert.throws(() => a.insert(-1, "x"), RangeError);
   assert.throws(() => a.delete(2, 2), RangeError);
   assert.throws(() => new Replica(""), TypeError);
+});
+
+test("a peer that pushes the Lamport clock to its limit cannot make local edits diverge", () => {
+  const a = new Replica("a");
+  a.apply({ type: "insert", id: { replica: "z", counter: Number.MAX_SAFE_INTEGER - 1 }, origin: null, value: "z" });
+  a.insert(1, "y"); // takes the last safe counter
+  assert.throws(() => a.insert(2, "x"), /Lamport counter exhausted/);
+  assert.equal(a.toString(), "zy");
 });
 
 /** Two replicas type two characters each at the start, forwards or backwards, then sync. */
