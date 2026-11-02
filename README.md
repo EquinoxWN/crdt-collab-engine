@@ -9,7 +9,7 @@ Part of my **Distributed Systems & Storage** list · TypeScript · core project
 
 ## Proof it works
 
-16 tests pass, three of them properties checked over 1,000 random delivery schedules each: every replica converges to the same text whatever order operations arrive in, and no edit is lost or resurrected. The known limitation (interleaving of text typed backwards concurrently) is pinned by a test so the M2 fix will show. npm audit finds nothing:
+18 tests pass, three of them properties checked over 1,000 random delivery schedules each: every replica converges to the same text whatever order operations arrive in, and no edit is lost or resurrected. The known limitation (interleaving of text typed backwards concurrently) is pinned by a test so the M2 fix will show. npm audit finds nothing:
 
 ![tsc, npm test and npm audit output](docs/proof/tests.jpg)
 
@@ -74,7 +74,7 @@ Needs Node.js 24 or newer.
 ```bash
 make setup   # npm ci
 make lint    # strict TypeScript type check
-make test    # 16 tests, including 3 properties x 1,000 random schedules
+make test    # 18 tests, including 3 properties x 1,000 random schedules
 make audit   # npm audit
 ```
 
@@ -95,7 +95,7 @@ Latest local run (full detail in [docs/results/m1.md](docs/results/m1.md)):
 
 | Check | Result |
 |---|---|
-| Unit tests (ids, tombstones, ordering, buffering, duplicates, validation) | 13 passed, 0 failed |
+| Unit tests (ids, tombstones, ordering, buffering, duplicates, validation) | 15 passed, 0 failed |
 | Property: all replicas converge, any delivery order (2-4 replicas, out-of-order and duplicated messages) | 1,000 / 1,000 schedules |
 | Property: no edit lost, no deleted character resurrected | 1,000 / 1,000 schedules |
 | Property: one replica behaves exactly like a string | 1,000 / 1,000 schedules |
@@ -108,7 +108,7 @@ Known limit, tested and documented (ADR 0002): text typed **forwards** concurren
 
 ```mermaid
 mindmap
-  root((16 tests pass))
+  root((18 tests pass))
     Identity
       unique id per character
       Lamport clock advances on receive
@@ -125,7 +125,7 @@ mindmap
       duplicates change nothing
       1000 random schedules converge
     Untrusted peers
-      10 malformed ops rejected
+      12 malformed ops rejected
       pending buffer is bounded
 ```
 
@@ -166,6 +166,7 @@ What this repo must show before it counts as done:
 - [ADR 0001: record architecture decisions](docs/adr/0001-record-architecture-decisions.md)
 - [ADR 0002: RGA ordering first, Fugue in M2](docs/adr/0002-rga-ordering-before-fugue.md)
 - [M1 results](docs/results/m1.md)
+- [Quality check against the 10 rules (2026-11-01)](docs/quality/2026-11-01.md)
 
 ## Scope
 
